@@ -4,6 +4,10 @@ package lesson2.task2
 
 import lesson1.task1.sqr
 
+fun main(args: Array<String>){
+    val result = pointInsideCircle(2.0, 4.0,5.0,6.0,10.0)
+    println(result)
+}
 /**
  * Пример
  *
@@ -12,34 +16,62 @@ import lesson1.task1.sqr
 fun pointInsideCircle(x: Double, y: Double, x0: Double, y0: Double, r: Double) =
     sqr(x - x0) + sqr(y - y0) <= sqr(r)
 
+fun module(x: Int): Int = if (x < 0) -x else x
+
+fun passingQuad(x1: Int, y1: Int, x2: Int, y2: Int): Boolean = ((x1 <= x2) && (y1 <= y2)) || ((x1 <= y2) && (y1 <= x2))
 /**
- * Простая
+ * Простая (2 балла)
  *
  * Четырехзначное число назовем счастливым, если сумма первых двух ее цифр равна сумме двух последних.
  * Определить, счастливое ли заданное число, вернуть true, если это так.
  */
-fun isNumberHappy(number: Int): Boolean = TODO()
+
+
+fun isNumberHappy(number: Int): Boolean {
+    val firstSum = (number / 1000) + ((number / 100) % 10)
+    val secondSum = ((number / 10) % 10) + (number % 10)
+    return when (firstSum) {
+        secondSum -> true
+        else -> false
+    }
+}
 
 /**
- * Простая
+ * Простая (2 балла)
  *
  * На шахматной доске стоят два ферзя (ферзь бьет по вертикали, горизонтали и диагоналям).
  * Определить, угрожают ли они друг другу. Вернуть true, если угрожают.
  * Считать, что ферзи не могут загораживать друг друга.
  */
-fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean = TODO()
+fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean {
+    val diffX = module(x1 - x2)
+    val diffY = module(y1 - y2)
+    return when {
+        ((x1 == x2) || (y1 == y2)) -> true
+        ((diffX == diffY)) -> true
+        else -> false
+    }
+}
 
 
 /**
- * Простая
+ * Простая (2 балла)
  *
  * Дан номер месяца (от 1 до 12 включительно) и год (положительный).
  * Вернуть число дней в этом месяце этого года по григорианскому календарю.
  */
-fun daysInMonth(month: Int, year: Int): Int = TODO()
+fun daysInMonth(month: Int, year: Int): Int{
+    val leapYear = if (year % 400 == 0) 1 else if (year % 100 == 0) 0 else if (year % 4 == 0) 1 else 0
+    return when {
+        ((leapYear == 1) && (month == 2)) -> 29
+        ((leapYear == 0) && (month == 2)) -> 28
+        ((month == 4) || (month == 6) || (month == 9) || (month == 11)) -> 30
+        else -> 31
+    }
+}
 
 /**
- * Средняя
+ * Простая (2 балла)
  *
  * Проверить, лежит ли окружность с центром в (x1, y1) и радиусом r1 целиком внутри
  * окружности с центром в (x2, y2) и радиусом r2.
@@ -48,10 +80,16 @@ fun daysInMonth(month: Int, year: Int): Int = TODO()
 fun circleInside(
     x1: Double, y1: Double, r1: Double,
     x2: Double, y2: Double, r2: Double
-): Boolean = TODO()
+): Boolean {
+    val first = pointInsideCircle((x1 - r1), y1, x2, y2, r2)
+    val second = pointInsideCircle((x1 + r1), y1, x2, y2, r2)
+    val third = pointInsideCircle(x1, (y1 - r1), x2, y2, r2)
+    val fourth = pointInsideCircle(x1, (y1 + r1), x2, y2, r2)
+    return first && second && third && fourth
+}
 
 /**
- * Средняя
+ * Средняя (3 балла)
  *
  * Определить, пройдет ли кирпич со сторонами а, b, c сквозь прямоугольное отверстие в стене со сторонами r и s.
  * Стороны отверстия должны быть параллельны граням кирпича.
@@ -59,4 +97,5 @@ fun circleInside(
  * кирпич 4 х 4 х 4 пройдёт через отверстие 4 х 4.
  * Вернуть true, если кирпич пройдёт
  */
-fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean = TODO()
+fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean =
+    (passingQuad(a, b, r, s) || passingQuad(a, c, r, s) || passingQuad(b, c, r, s))
